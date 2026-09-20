@@ -3,5 +3,6 @@
   command = "npm run build"
   publish = "dist"
 
-# Set this in the Netlify UI after Render gives you a URL:
-#   VITE_API_BASE = https://YOUR-SERVICE.onrender.com/api
+# Netlify UI → Environment variables (then Redeploy):
+#   VITE_API_BASE = https://traffic-analysis-pgcc.onrender.com
+# With or without /api is fine; frontend normalizes it.

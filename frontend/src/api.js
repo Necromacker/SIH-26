@@ -1,8 +1,18 @@
 /**
  * api.js — API client for the FastAPI backend.
+ *
+ * Accepts either:
+ *   VITE_API_BASE=https://xxx.onrender.com
+ *   VITE_API_BASE=https://xxx.onrender.com/api
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+function resolveApiBase() {
+  const raw = String(import.meta.env.VITE_API_BASE || '/api').trim().replace(/\/+$/, '');
+  if (!raw || raw === '/api') return '/api';
+  return raw.endsWith('/api') ? raw : `${raw}/api`;
+}
+
+const API_BASE = resolveApiBase();
 
 /**
  * Upload a video file. Returns { job_id, filename }.

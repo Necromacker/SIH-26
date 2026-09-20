@@ -28,12 +28,14 @@ from logutil import log, step
 
 app = FastAPI(title="FlytBase Drone Traffic Analytics")
 
+# allow_credentials=True + origins="*" is invalid CORS and browsers drop the header.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
@@ -85,6 +87,7 @@ def health():
 
 
 @app.post("/api/upload")
+@app.post("/upload")
 async def upload_video(video: UploadFile = File(...)):
     """Accept a video upload and start a tracking job."""
     job_id = str(uuid.uuid4())[:8]
@@ -213,6 +216,7 @@ def _run_job(job_id: str):
 
 
 @app.get("/api/status/{job_id}")
+@app.get("/status/{job_id}")
 async def job_status_sse(job_id: str):
     """Server-Sent Events stream for real-time progress."""
     step("CALL status SSE", job_id=job_id, known=job_id in jobs)
@@ -253,6 +257,7 @@ async def job_status_sse(job_id: str):
 
 
 @app.get("/api/results/{job_id}")
+@app.get("/results/{job_id}")
 async def get_results(job_id: str):
     """Return full tracking results with analytics."""
     step("CALL results", job_id=job_id, known=job_id in jobs)
@@ -319,6 +324,7 @@ async def get_results(job_id: str):
 
 
 @app.get("/api/video/{job_id}")
+@app.get("/video/{job_id}")
 async def serve_video(job_id: str):
     """Serve the annotated video."""
     step("CALL video", job_id=job_id)
@@ -342,6 +348,7 @@ async def serve_video(job_id: str):
 
 
 @app.get("/api/download/{job_id}")
+@app.get("/download/{job_id}")
 async def download_parquet(job_id: str):
     """Download the tracks parquet file."""
     step("CALL download", job_id=job_id)
@@ -365,6 +372,7 @@ async def download_parquet(job_id: str):
 
 
 @app.get("/api/jobs")
+@app.get("/jobs")
 async def list_jobs():
     """List all jobs and their status."""
     step("CALL list_jobs", count=len(jobs))
