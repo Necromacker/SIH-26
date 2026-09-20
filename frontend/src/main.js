@@ -1,5 +1,5 @@
 /**
- * main.js — Main application orchestrator for FlytBase Drone Traffic Analytics.
+ * main.js — Main application orchestrator for Drone Traffic Analytics.
  */
 
 import './style.css';
@@ -32,23 +32,6 @@ function setState(updates) {
   render();
 }
 
-function renderHeader() {
-  return `
-    <header class="header">
-      <div class="container header-inner">
-        <div class="logo">
-          <div class="logo-icon">🛸</div>
-          <div class="logo-text">Flyt<span>Base</span></div>
-        </div>
-        <div class="header-badge">
-          <span class="dot"></span>
-          <span>VisDrone YOLO11s + ByteTrack</span>
-        </div>
-      </div>
-    </header>
-  `;
-}
-
 function renderProcessing() {
   const p = state.progress;
   const pct = p.total > 0 ? Math.min(Math.round((p.processed / p.total) * 100), 100) : 0;
@@ -71,11 +54,11 @@ function renderProcessing() {
               <div class="progress-stat-label">Progress (${p.processed}/${p.total || '?'})</div>
             </div>
             <div class="progress-stat">
-              <div class="progress-stat-value">${p.fps ? p.fps.toFixed(1) : '—'} <span style="font-size: 13px;">fps</span></div>
+              <div class="progress-stat-value">${p.fps ? p.fps.toFixed(1) : '--'} <span style="font-size: 13px;">fps</span></div>
               <div class="progress-stat-label">Speed</div>
             </div>
             <div class="progress-stat">
-              <div class="progress-stat-value">${p.eta_s > 0 ? formatDuration(p.eta_s) : '—'}</div>
+              <div class="progress-stat-value">${p.eta_s > 0 ? formatDuration(p.eta_s) : '--'}</div>
               <div class="progress-stat-label">ETA</div>
             </div>
           </div>
@@ -90,7 +73,13 @@ function renderError() {
     <section class="processing-section">
       <div class="container">
         <div class="error-card animate-in">
-          <div class="error-icon">⚠️</div>
+          <div class="error-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
           <h2 class="error-title">Processing Error</h2>
           <p class="error-message">${state.error || 'An unexpected error occurred while processing the video.'}</p>
           <button class="btn btn-primary" id="btn-retry">Try Again</button>
@@ -101,20 +90,18 @@ function renderError() {
 }
 
 function render() {
-  // Always render header
-  const headerHtml = renderHeader();
   const contentDiv = document.createElement('div');
 
   if (state.view === 'upload') {
-    app.innerHTML = headerHtml;
+    app.innerHTML = '';
     app.appendChild(contentDiv);
     renderUpload(contentDiv, {
       onFileSelected: handleFileUpload,
     });
   } else if (state.view === 'processing') {
-    app.innerHTML = headerHtml + renderProcessing();
+    app.innerHTML = renderProcessing();
   } else if (state.view === 'dashboard') {
-    app.innerHTML = headerHtml;
+    app.innerHTML = '';
     app.appendChild(contentDiv);
     renderDashboard(contentDiv, state.results, {
       onNewUpload: () => {
@@ -130,7 +117,7 @@ function render() {
       },
     });
   } else if (state.view === 'error') {
-    app.innerHTML = headerHtml + renderError();
+    app.innerHTML = renderError();
     const retryBtn = document.getElementById('btn-retry');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
@@ -170,8 +157,8 @@ async function handleFileUpload(file) {
             const statVals = processingCard.querySelectorAll('.progress-stat-value');
             if (statVals.length >= 3) {
               statVals[0].innerHTML = `${pct}%`;
-              statVals[1].innerHTML = `${p.fps ? p.fps.toFixed(1) : '—'} <span style="font-size: 13px;">fps</span>`;
-              statVals[2].innerHTML = `${p.eta_s > 0 ? formatDuration(p.eta_s) : '—'}`;
+              statVals[1].innerHTML = `${p.fps ? p.fps.toFixed(1) : '--'} <span style="font-size: 13px;">fps</span>`;
+              statVals[2].innerHTML = `${p.eta_s > 0 ? formatDuration(p.eta_s) : '--'}`;
             }
             const statLbls = processingCard.querySelectorAll('.progress-stat-label');
             if (statLbls.length >= 1) {

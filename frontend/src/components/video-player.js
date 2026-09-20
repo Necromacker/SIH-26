@@ -18,7 +18,7 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
     <div class="video-card animate-in" id="video-card">
       <div class="video-header">
         <div class="video-title">
-          <span>🎥 Drone Live Feed & Telemetry HUD</span>
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> Drone Live Feed and Telemetry HUD</span>
           <span id="hud-status-badge" class="hud-status-badge">
             <span class="hud-dot"></span>
             <span id="hud-status-text">SURVEILLANCE MODE</span>
@@ -27,7 +27,7 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
         <div class="video-meta">
           <span style="margin-right: 12px;">${resolution} @ ${fps} fps</span>
           <button id="btn-release-lock" class="btn btn-outline btn-sm" style="display: none; padding: 4px 10px; font-size: 11px;">
-            ✕ Release Lock
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Release Lock
           </button>
         </div>
       </div>
@@ -46,7 +46,6 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
           Your browser does not support the video tag.
         </video>
 
-        <!-- Dynamic HUD Overlay Layer -->
         <div id="hud-target-box" class="hud-target-box" style="display: none;">
           <div class="hud-corners top-left"></div>
           <div class="hud-corners top-right"></div>
@@ -124,10 +123,8 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
     const normBox = boxes[bestIdx]; // [x1, y1, x2, y2] normalized 0..1
     const spd = speeds[bestIdx] || 0;
 
-    // Compute pixel position inside video element
     const stageWidth = stage.clientWidth;
     const stageHeight = stage.clientHeight;
-
     const left = normBox[0] * stageWidth;
     const top = normBox[1] * stageHeight;
     const width = Math.max((normBox[2] - normBox[0]) * stageWidth, 24);
@@ -148,7 +145,7 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
     statusText.textContent = `LOCKED: #${activeLock.trackId} ${activeLock.meta.label.toUpperCase()}`;
     statusBadge.className = 'hud-status-badge locked';
 
-    pillTitle.textContent = `🎯 TARGET #${activeLock.trackId} [${activeLock.meta.label.toUpperCase()}]`;
+    pillTitle.textContent = `TARGET #${activeLock.trackId} [${activeLock.meta.label.toUpperCase()}]`;
     pillDesc.textContent = `Speed: ${spdText} • Window: ${firstT}s → ${lastT}s`;
   }
 

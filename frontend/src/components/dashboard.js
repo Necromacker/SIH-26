@@ -31,10 +31,10 @@ export function renderDashboard(container, results, { onNewUpload }) {
           </div>
           <div class="dashboard-actions">
             <a href="${getDownloadUrl(results.job_id)}" download class="btn btn-outline" id="btn-download-parquet">
-              📥 Download Parquet
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Parquet
             </a>
             <button class="btn btn-primary" id="btn-new-video">
-              ➕ Analyze Another Video
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Analyze Another Video
             </button>
           </div>
         </div>
@@ -42,7 +42,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
         <!-- Hero Metric Cards Grid -->
         <div class="stats-grid animate-in animate-in-delay-1">
           <div class="stat-card" style="--card-accent: var(--accent-blue);">
-            <div class="stat-icon">🚗</div>
+            <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg></div>
             <div class="stat-value" style="color: var(--accent-blue);">
               ${formatNumber(results.unique_tracks || overview.unique_tracks)}
             </div>
@@ -50,7 +50,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           </div>
 
           <div class="stat-card" style="--card-accent: var(--accent-emerald);">
-            <div class="stat-icon">⚡</div>
+            <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
             <div class="stat-value" style="color: var(--accent-emerald);">
               ${overview.mean_speed_kmh ? `${overview.mean_speed_kmh}` : '18.4'} <span style="font-size: 16px; font-weight: 600;">km/h</span>
             </div>
@@ -58,7 +58,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           </div>
 
           <div class="stat-card" style="--card-accent: var(--accent-purple);">
-            <div class="stat-icon">🎯</div>
+            <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
             <div class="stat-value" style="color: var(--accent-purple);">
               ${formatNumber(results.total_detections || overview.total_detections)}
             </div>
@@ -66,7 +66,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           </div>
 
           <div class="stat-card" style="--card-accent: var(--accent-amber);">
-            <div class="stat-icon">⏱️</div>
+            <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <div class="stat-value" style="color: var(--accent-amber);">
               ${results.mean_track_length_s ? `${results.mean_track_length_s}s` : `${overview.mean_track_duration_s}s`}
             </div>
@@ -74,7 +74,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           </div>
 
           <div class="stat-card" style="--card-accent: var(--accent-cyan);">
-            <div class="stat-icon">🏷️</div>
+            <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
             <div class="stat-value" style="color: var(--accent-cyan);">
               ${classSummary.length}
             </div>
@@ -90,7 +90,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           <!-- 1. Modal Split Donut Chart -->
           <div class="chart-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 class="chart-title" style="margin: 0;">📊 Modal Split (Unique Vehicles)</h3>
+              <h3 class="chart-title" style="margin: 0;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Modal Split (Unique Vehicles)</h3>
               <span style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">
                 ${formatNumber(results.unique_tracks || overview.unique_tracks)} total units
               </span>
@@ -103,7 +103,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
           <!-- 2. Target Lock-On Telemetry Deck -->
           <div class="chart-card telemetry-deck" id="telemetry-deck">
             <div id="telemetry-idle" class="telemetry-state-idle">
-              <div class="telemetry-idle-icon">🎯</div>
+              <div class="telemetry-idle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
               <h4 style="font-size: 16px; margin-bottom: 6px;">Target Lock-On Telemetry</h4>
               <p style="color: var(--text-muted); font-size: 13px; max-width: 360px; line-height: 1.6;">
                 Click on any vehicle in the <strong>Track Directory</strong> below to lock the camera HUD, jump to its timestamp, and inspect real-time kinematics.
@@ -117,7 +117,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
                   <h3 id="tel-class-title" style="font-size: 20px; font-weight: 800; margin-top: 4px;">Car</h3>
                 </div>
                 <button id="btn-tel-release" class="btn btn-outline btn-sm" style="font-size: 12px; padding: 6px 12px;">
-                  ✕ Release Lock
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Release Lock
                 </button>
               </div>
 
@@ -150,7 +150,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
 
               <div class="telemetry-actions" style="margin-top: 16px; display: flex; gap: 10px;">
                 <button id="btn-tel-jump" class="btn btn-primary btn-sm" style="flex: 1; font-size: 12px;">
-                  ⏮ Jump to Start (t=<span id="tel-start-sec">0.0</span>s)
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg> Jump to Start (t=<span id="tel-start-sec">0.0</span>s)
                 </button>
               </div>
             </div>
@@ -162,10 +162,10 @@ export function renderDashboard(container, results, { onNewUpload }) {
           <div class="table-header">
             <div>
               <div class="table-title">
-                📋 Track Directory & Vehicle Kinematics
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Track Directory and Vehicle Kinematics
               </div>
               <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                Click any row or the 🎯 Lock button to focus the video HUD on that vehicle.
+                Click any row or the Lock button to focus the video HUD on that vehicle.
               </p>
             </div>
             <div class="table-count">Showing ${trackSummaries.length} tracked road users</div>
@@ -199,7 +199,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
                     <tr class="track-row" data-track-id="${t.track_id}" style="cursor: pointer;">
                       <td>
                         <button class="btn btn-outline btn-sm btn-lock-row" data-track-id="${t.track_id}" style="padding: 4px 10px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
-                          <span>🎯</span> <span>Lock</span>
+                          <span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span> <span>Lock</span>
                         </button>
                       </td>
                       <td class="mono" style="font-weight: 700; color: var(--accent-blue);">#${t.track_id}</td>
@@ -284,7 +284,7 @@ export function renderDashboard(container, results, { onNewUpload }) {
     telIdle.style.display = 'none';
     telActive.style.display = 'block';
 
-    telTargetTag.textContent = `🎯 TARGET #${trackId}`;
+    telTargetTag.textContent = `TARGET #${trackId}`;
     telClassTitle.innerHTML = `<span style="color: ${meta.color || '#38bdf8'};">${meta.label}</span>`;
     telMeanSpd.textContent = meta.mean_speed_kmh > 0 ? `${meta.mean_speed_kmh} km/h` : '0 km/h';
     telMaxSpd.textContent = meta.max_speed_kmh > 0 ? `${meta.max_speed_kmh} km/h` : '0 km/h';
