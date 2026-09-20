@@ -43,16 +43,28 @@ export function renderClassChart(canvasId, classSummary) {
     options: {
       responsive: true,
       maintainAspectRatio: true,
+      layout: {
+        padding: {
+          top: 10,
+          bottom: 10,
+          left: 10,
+          right: 10,
+        },
+      },
       cutout: '65%',
       plugins: {
         legend: {
           position: 'right',
+          align: 'center',
           labels: {
             color: '#94a3b8',
             font: { family: "'Inter', sans-serif", size: 12, weight: '500' },
-            padding: 14,
+            padding: 16,
             usePointStyle: true,
-            pointStyleWidth: 8,
+            pointStyle: 'rectRounded',
+            pointStyleWidth: 16,
+            boxWidth: 16,
+            boxHeight: 10,
           },
         },
         tooltip: {

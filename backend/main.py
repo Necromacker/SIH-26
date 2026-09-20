@@ -89,9 +89,54 @@ def _run_job(job_id: str):
             annotate_seconds=9999,  # annotate all
             on_progress=on_progress,
         )
+
+        parquet_path = Path(result["parquet_path"])
+        if parquet_path.exists():
+            df = pd.read_parquet(parquet_path)
+            source_fps = result["source_fps"]
+            stride = 5
+
+            trajectories = {}
+            if not df.empty and "track_id" in df.columns:
+                valid_df = df[df["track_id"] >= 0].sort_values(["track_id", "timestamp_s"])
+                try:
+                    res_parts = str(result.get("source_resolution", "3840x2160")).split("x")
+                    w, h = float(res_parts[0]), float(res_parts[1])
+                except Exception:
+                    w, h = 3840.0, 2160.0
+
+                for tid, gdf in valid_df.groupby("track_id"):
+                    trajectories[int(tid)] = {
+                        "t": [round(float(t), 2) for t in gdf["timestamp_s"]],
+                        "box": [
+                            [
+                                round(float(r.x1) / w, 4),
+                                round(float(r.y1) / h, 4),
+                                round(float(r.x2) / w, 4),
+                                round(float(r.y2) / h, 4),
+                            ]
+                            for r in gdf.itertuples()
+                        ],
+                        "speed": [
+                            round(float(s), 1) if pd.notna(s) else 0.0
+                            for s in (gdf["speed_kmh"] if "speed_kmh" in gdf.columns else [0] * len(gdf))
+                        ],
+                    }
+
+            analytics = {
+                "overview": overview_stats(df, source_fps, stride, result["duration_s"]),
+                "class_summary": class_summary(df),
+                "track_summaries": track_summaries(df, source_fps, stride)[:150],
+                "speed_estimates": speed_estimate_px(df, source_fps, stride)[:50],
+                "trajectories": trajectories,
+            }
+            result["analytics"] = analytics
+
         job["result"] = result
         job["status"] = "done"
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         job["error"] = str(e)
         job["status"] = "error"
 

@@ -168,18 +168,10 @@ async function handleFileUpload(file) {
         }
       },
       onDone: async (finalResult) => {
-        try {
-          const fullResults = await getResults(jobId);
-          setState({
-            view: 'dashboard',
-            results: fullResults,
-          });
-        } catch (fetchErr) {
-          setState({
-            view: 'dashboard',
-            results: { ...finalResult, job_id: jobId, filename: file.name },
-          });
-        }
+        setState({
+          view: 'dashboard',
+          results: { ...finalResult, job_id: jobId, filename: file.name },
+        });
       },
       onError: (errData) => {
         setState({

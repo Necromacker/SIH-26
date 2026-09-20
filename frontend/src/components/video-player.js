@@ -11,27 +11,8 @@ let activeLock = {
 };
 
 export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onLockChanged = null) {
-  const resolution = meta.source_resolution || '—';
-  const fps = meta.sampled_fps ? meta.sampled_fps.toFixed(1) : '—';
-
   container.innerHTML = `
     <div class="video-card animate-in" id="video-card">
-      <div class="video-header">
-        <div class="video-title">
-          <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> Drone Live Feed and Telemetry HUD</span>
-          <span id="hud-status-badge" class="hud-status-badge">
-            <span class="hud-dot"></span>
-            <span id="hud-status-text">SURVEILLANCE MODE</span>
-          </span>
-        </div>
-        <div class="video-meta">
-          <span style="margin-right: 12px;">${resolution} @ ${fps} fps</span>
-          <button id="btn-release-lock" class="btn btn-outline btn-sm" style="display: none; padding: 4px 10px; font-size: 11px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Release Lock
-          </button>
-        </div>
-      </div>
-
       <div class="video-stage" id="video-stage">
         <video
           id="main-video-player"
@@ -65,6 +46,9 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
             <span class="pill-title" id="pill-title">LOCK ACQUIRED</span>
             <span class="pill-desc" id="pill-desc">Tracking object...</span>
           </div>
+          <button id="btn-release-lock" class="btn btn-outline btn-sm" style="margin-left: 8px; padding: 4px 8px; font-size: 11px; background: rgba(255,255,255,0.9);">
+            Release
+          </button>
         </div>
       </div>
     </div>
@@ -74,8 +58,6 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
   const stage = container.querySelector('#video-stage');
   const targetBox = container.querySelector('#hud-target-box');
   const tagEl = container.querySelector('#hud-tag');
-  const statusBadge = container.querySelector('#hud-status-badge');
-  const statusText = container.querySelector('#hud-status-text');
   const releaseBtn = container.querySelector('#btn-release-lock');
   const pill = container.querySelector('#hud-telemetry-pill');
   const pillTitle = container.querySelector('#pill-title');
@@ -104,8 +86,6 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
 
     if (t < firstT - 0.4 || t > lastT + 0.4) {
       targetBox.style.display = 'none';
-      statusText.textContent = `TARGET #${activeLock.trackId} OUT OF FRAME`;
-      statusBadge.className = 'hud-status-badge out-of-frame';
       return;
     }
 
@@ -142,9 +122,6 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
       <span class="hud-tag-spd">${spdText}</span>
     `;
 
-    statusText.textContent = `LOCKED: #${activeLock.trackId} ${activeLock.meta.label.toUpperCase()}`;
-    statusBadge.className = 'hud-status-badge locked';
-
     pillTitle.textContent = `TARGET #${activeLock.trackId} [${activeLock.meta.label.toUpperCase()}]`;
     pillDesc.textContent = `Speed: ${spdText} • Window: ${firstT}s → ${lastT}s`;
   }
@@ -172,8 +149,6 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
 
     releaseBtn.style.display = 'inline-flex';
     pill.style.display = 'flex';
-    statusText.textContent = `LOCK ACQUIRED: #${trackId}`;
-    statusBadge.className = 'hud-status-badge locked';
 
     if (trackMeta && trackMeta.first_seen_s != null) {
       video.currentTime = Math.max(trackMeta.first_seen_s - 0.2, 0);
@@ -187,10 +162,7 @@ export function renderVideoPlayer(container, jobId, meta, trajectories = {}, onL
   function unlockTarget() {
     activeLock = { trackId: null, meta: null, traj: null };
     targetBox.style.display = 'none';
-    releaseBtn.style.display = 'none';
     pill.style.display = 'none';
-    statusText.textContent = 'SURVEILLANCE MODE';
-    statusBadge.className = 'hud-status-badge';
   }
 
   return {

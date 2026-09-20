@@ -228,7 +228,7 @@ pre {
 /* --- Upload Zone --- */
 .upload-zone {
   width: 100%;
-  border: 2px dashed black;
+  border: none;
   border-radius: var(--radius-xl);
   background: var(--gradient-card);
   backdrop-filter: blur(12px);
@@ -246,7 +246,7 @@ pre {
   inset: -2px;
   border-radius: var(--radius-xl);
   padding: 2px;
-  background: var(--gradient-accent);
+  background: linear-gradient(135deg, #5b7fdb, #3ea8c4);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -273,6 +273,51 @@ pre {
   object-fit: cover;
   border-radius: var(--radius-xl);
   display: block;
+  filter: blur(3px);
+  transition: filter var(--transition-normal);
+}
+
+.upload-zone:hover .upload-hero-img {
+  filter: blur(1.5px);
+}
+
+.upload-zone-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-normal);
+}
+
+.upload-zone:hover .upload-zone-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.upload-zone-svg {
+  width: 56px;
+  height: 56px;
+  color: #ffffff;
+  filter: none;
+  opacity: 1;
+  margin-bottom: 10px;
+  transition: transform var(--transition-normal);
+}
+
+.upload-zone:hover .upload-zone-svg {
+  filter: none;
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.upload-zone-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .upload-hint {
@@ -581,9 +626,16 @@ pre {
   justify-content: center;
 }
 
+.processing-section .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .processing-card {
   width: 100%;
   max-width: 560px;
+  margin: 0 auto;
   padding: 48px;
   border-radius: var(--radius-xl);
   background: var(--gradient-card);
@@ -771,14 +823,14 @@ pre {
 
 .stat-card {
   padding: 24px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
   background: var(--gradient-card);
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-card::before {
@@ -834,11 +886,11 @@ pre {
 
 .chart-card {
   padding: 28px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
   background: var(--gradient-card);
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .chart-card.full-width {
