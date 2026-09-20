@@ -81,8 +81,9 @@ CLASS_COLORS = {
 }
 
 # Upload / output directories
-UPLOAD_DIR = Path(__file__).resolve().parent.parent / "data" / "uploads"
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data" / "output"
+_data_root = Path(os.getenv("DATA_DIR", str(Path(__file__).resolve().parent.parent / "data")))
+UPLOAD_DIR = _data_root / "uploads"
+OUTPUT_DIR = _data_root / "output"
 
 
 def pick_device(forced: str = "auto") -> tuple[str, bool]:

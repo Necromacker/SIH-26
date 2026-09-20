@@ -1,0 +1,13 @@
+.git
+.github
+frontend
+node_modules
+data
+*.mp4
+*.mov
+backend/notebooks
+**/__pycache__
+**/*.pyc
+**/.DS_Store
+.env
+agent-transcripts

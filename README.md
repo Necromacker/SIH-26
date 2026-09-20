@@ -1,3 +1,14 @@
+---
+title: Drone Traffic Analytics
+emoji: 🛸
+colorFrom: blue
+colorTo: indigo
+sdk: gradio
+sdk_version: 4.44.1
+app_file: app.py
+pinned: false
+---
+
 # 🛸 FlytBase Drone Traffic Analytics — Full-Stack Vision Intelligence
 
 A modern, production-grade aerial traffic intelligence web application combining **VisDrone-fine-tuned YOLOv11s** object detection, **Supervision InferenceSlicer** for tiled high-resolution inference, **ByteTrack** multi-object tracking, and a **Vite + Vanilla JS** dark-mode analytics dashboard.

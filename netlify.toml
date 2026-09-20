@@ -3,6 +3,6 @@
   command = "npm run build"
   publish = "dist"
 
-# Netlify UI → Environment variables (then Redeploy):
-#   VITE_API_BASE = https://traffic-analysis-pgcc.onrender.com
+# Netlify UI → Environment variables → Redeploy:
+#   VITE_API_BASE = https://YOUR-USER-traffic-analysis-api.hf.space
 # With or without /api is fine; frontend normalizes it.
