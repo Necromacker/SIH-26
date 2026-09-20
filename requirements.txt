@@ -12,5 +12,4 @@ uvicorn[standard]>=0.30
 python-multipart>=0.0.9
 scipy>=1.11
 matplotlib>=3.8
-gradio>=5.0
 spaces

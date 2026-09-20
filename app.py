@@ -68,7 +68,7 @@ with gr.Blocks(title="Drone Traffic Analytics") as demo:
         "Use a **short** clip (≤30s). First run downloads `best.pt` and can take a few minutes."
     )
     with gr.Row():
-        inp = gr.Video(label="Traffic video", sources=["upload"])
+        inp = gr.Video(label="Traffic video")
         out_video = gr.Video(label="Annotated tracks")
     out_json = gr.Textbox(label="Analytics", lines=22, max_lines=40)
     btn = gr.Button("Run tracking", variant="primary")
