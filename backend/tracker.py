@@ -37,6 +37,7 @@ from config import (
     CLASS_COLORS,
     pick_device,
 )
+from logutil import log, step
 
 # Nadir drone ground sampling distance (approx 0.035 m/px for 4K at ~70m altitude)
 DEFAULT_METERS_PER_PIXEL = 0.035
@@ -50,8 +51,13 @@ _model_cache: dict = {}
 def get_model() -> YOLO:
     """Load the VisDrone YOLO11s model, downloading from HF Hub if needed."""
     if "model" not in _model_cache:
+        step("STEP hf_hub_download", repo=HF_REPO_ID, filename=HF_FILENAME)
         weights = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
+        step("STEP weights on disk", path=weights)
         _model_cache["model"] = YOLO(weights)
+        step("STEP YOLO loaded")
+    else:
+        step("STEP YOLO cache hit")
     return _model_cache["model"]
 
 
@@ -132,15 +138,25 @@ def run_tracking(
     out_dir.mkdir(parents=True, exist_ok=True)
     parquet_path = out_dir / "tracks.parquet"
     annotated_path = out_dir / "tracks_annotated.mp4"
+    step(
+        "STEP run_tracking start",
+        video=video_path,
+        stride=stride,
+        max_seconds=max_seconds,
+        slice_wh=SLICE_WH,
+    )
 
     device, use_half = pick_device(device_override)
+    step("STEP device", device=device, fp16=use_half)
     model = get_model()
     class_names = model.names
 
+    step("STEP build slicer")
     slicer = build_slicer(model, device, use_half)
 
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
+        log.error("Could not open video: %s", video_path)
         raise RuntimeError(f"Could not open video: {video_path}")
 
     source_fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
@@ -159,7 +175,18 @@ def run_tracking(
     if start_frame > 0:
         cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
 
+    step(
+        "STEP video opened",
+        fps=round(source_fps, 2),
+        size=f"{width}x{height}",
+        frames=total_frames,
+        duration_s=round(video_duration_s, 2),
+        window_s=round(window_s, 2),
+        expected=expected_processed,
+    )
+
     tracker = build_tracker(sampled_fps)
+    step("STEP tracker+writer ready")
     box_annotator = sv.BoxAnnotator(thickness=2)
     label_annotator = sv.LabelAnnotator(
         text_scale=0.45,
@@ -284,6 +311,14 @@ def run_tracking(
                     writer.write(annotated)
 
                 processed += 1
+                step(
+                    "STEP frame",
+                    processed=processed,
+                    total=expected_processed,
+                    frame_idx=frame_idx,
+                    t=round(timestamp_s, 2),
+                    detections=len(detections),
+                )
 
                 # Send progress updates
                 if on_progress and (processed % 5 == 0 or processed == expected_processed):
@@ -305,6 +340,7 @@ def run_tracking(
     finally:
         cap.release()
         writer.release()
+        step("STEP capture released", processed=processed, records=len(records))
 
     # Build DataFrame
     df = pd.DataFrame.from_records(records)
@@ -339,6 +375,7 @@ def run_tracking(
             df["class_name"] = df["track_id"].map(track_winner)
             df["class_group"] = df["class_name"].map(lambda c: CLASS_GROUP.get(c, c))
 
+    step("STEP write parquet", rows=len(df), path=parquet_path)
     df.to_parquet(parquet_path, index=False)
 
     # Summary Statistics
@@ -355,6 +392,14 @@ def run_tracking(
         .to_dict()
         if n_tracks
         else {}
+    )
+
+    step(
+        "STEP run_tracking done",
+        unique_tracks=n_tracks,
+        detections=len(df),
+        breakdown=class_breakdown,
+        elapsed_s=round(time.time() - t0, 1),
     )
 
     return {
