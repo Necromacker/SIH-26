@@ -4,10 +4,9 @@ config.py — Shared constants, device picker, and class mappings.
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
-
-import torch
 
 # ---------------------------------------------------------------------------
 # Model
@@ -18,12 +17,15 @@ HF_FILENAME = "best.pt"
 # ---------------------------------------------------------------------------
 # Tracking defaults
 # ---------------------------------------------------------------------------
-SLICE_WH = (1024, 1024)
+# Render Free (512 MB) sets LOW_MEMORY=1 to shrink tiled inference.
+_low_memory = os.getenv("LOW_MEMORY", "").lower() in {"1", "true", "yes"}
+SLICE_WH = (640, 640) if _low_memory else (1024, 1024)
 OVERLAP_RATIO = 0.2
 CONF_THRESHOLD = 0.25
 IOU_THRESHOLD = 0.5
-STRIDE_DEFAULT = 5
+STRIDE_DEFAULT = int(os.getenv("TRACK_STRIDE", "10" if _low_memory else "5"))
 ANNOTATE_SECONDS_DEFAULT = 30.0
+MAX_SECONDS_DEFAULT = float(os.getenv("MAX_VIDEO_SECONDS", "20" if _low_memory else "0"))
 
 # ---------------------------------------------------------------------------
 # VisDrone class map
@@ -86,6 +88,8 @@ OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data" / "output"
 def pick_device(forced: str = "auto") -> tuple[str, bool]:
     """Resolve torch device. Returns (device_str, use_fp16).
     fp16 is only safe on CUDA; MPS/CPU use fp32."""
+    import torch
+
     has_mps = hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
 
     if forced == "cuda":

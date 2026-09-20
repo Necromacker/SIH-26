@@ -1,0 +1,7 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+# Set this in the Netlify UI after Render gives you a URL:
+#   VITE_API_BASE = https://YOUR-SERVICE.onrender.com/api

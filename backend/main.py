@@ -22,9 +22,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 
-from config import UPLOAD_DIR, OUTPUT_DIR
-from tracker import run_tracking
-from analytics import class_summary, track_summaries, speed_estimate_px, overview_stats
+from config import MAX_SECONDS_DEFAULT, STRIDE_DEFAULT, UPLOAD_DIR, OUTPUT_DIR
 
 app = FastAPI(title="FlytBase Drone Traffic Analytics")
 
@@ -38,6 +36,13 @@ app.add_middleware(
 
 # In-memory job store
 jobs: dict[str, dict] = {}
+
+
+@app.get("/")
+@app.get("/health")
+def health():
+    """Render health check — must not import PyTorch."""
+    return {"ok": True, "service": "flytbase-traffic"}
 
 
 @app.post("/api/upload")
@@ -81,12 +86,15 @@ def _run_job(job_id: str):
         job["progress"].append(p)
 
     try:
+        from tracker import run_tracking
+        from analytics import class_summary, track_summaries, speed_estimate_px, overview_stats
+
         result = run_tracking(
             video_path=Path(job["video_path"]),
             out_dir=Path(job["out_dir"]),
-            stride=5,
-            max_seconds=0,  # process full video
-            annotate_seconds=9999,  # annotate all
+            stride=STRIDE_DEFAULT,
+            max_seconds=MAX_SECONDS_DEFAULT,
+            annotate_seconds=9999,
             on_progress=on_progress,
         )
 
@@ -187,6 +195,8 @@ async def get_results(job_id: str):
     if job["status"] != "done":
         return {"status": job["status"], "error": job.get("error")}
 
+    from analytics import class_summary, track_summaries, speed_estimate_px, overview_stats
+
     result = job["result"]
     parquet_path = Path(result["parquet_path"])
 
@@ -194,7 +204,7 @@ async def get_results(job_id: str):
     df = pd.read_parquet(parquet_path)
 
     source_fps = result["source_fps"]
-    stride = 5
+    stride = STRIDE_DEFAULT
 
     # Build per-track trajectory index for real-time video locking & HUD overlays
     trajectories = {}
